@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
                           todo: todoo,
                           onToDoChanged: _handleToDoChange,
                           onDeleteItem: _deleteToDoItem,
+                          onEditItem: _editToDoItem, // Passar o método de edição
                         ),
                     ],
                   ),
@@ -146,6 +147,41 @@ class _HomeState extends State<Home> {
       ));
     });
     _todoController.clear();
+  }
+
+  void _editToDoItem(String id) {
+    final todo = todosList.firstWhere((item) => item.id == id);
+    final controller = TextEditingController(text: todo.todoText);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Task'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(hintText: 'Edit your task'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  todo.todoText = controller.text;
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _runFilter(String enteredKeyword) {
