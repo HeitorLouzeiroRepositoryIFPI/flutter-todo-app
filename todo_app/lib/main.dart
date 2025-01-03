@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:todo_app/screens/onboarding_page.dart';
+import 'package:todo_app/screens/splash_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ToDo App',
-      home: OnboardingPage(),
+      home: SplashScreen(),
     );
   }
 }

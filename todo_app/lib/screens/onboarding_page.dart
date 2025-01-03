@@ -159,7 +159,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 });
                 _savePreference(_dontShowAgain); // Salvar a preferência
               },
-              title: const Text("Não quero ver isso novamente"),
+              title: const Text("Pular"),
               controlAffinity: ListTileControlAffinity.leading,
             ),
           ],
