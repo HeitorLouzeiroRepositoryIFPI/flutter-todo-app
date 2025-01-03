@@ -115,6 +115,14 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void _toggleToDoStatus(String id) {
+    setState(() {
+      final todo = _filteredOrAllTodos.firstWhere((item) => item.id == id);
+      todo.isDone = !todo.isDone; // Alterna o estado de isDone
+    });
+    _saveToDoList(); // Salva a alteração no SharedPreferences
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,16 +134,48 @@ class _HomeState extends State<Home> {
           // Campo de texto para adicionar novas tarefas
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _todoController, // Controlador do campo de texto
-              decoration: const InputDecoration(
-                hintText: 'Add a new to-do item', // Texto que aparece quando o campo está vazio
-              ),
-              onSubmitted: (value) {
-                _addToDoItem(value); // Adiciona o item quando o usuário pressionar "Enter"
-              },
+            child: Row(
+              children: [
+                // Campo de texto
+                Expanded(
+                  child: TextField(
+                    controller: _todoController, // Controlador do campo de texto
+                    decoration: const InputDecoration(
+                      hintText: 'Add a new to-do item', // Texto que aparece quando o campo está vazio
+                    ),
+                    onSubmitted: (value) {
+                      _addToDoItem(value); // Adiciona o item quando o usuário pressionar "Enter"
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8), // Espaçamento entre o campo de texto e o botão
+                // Botão de envio
+                ElevatedButton(
+                  onPressed: () {
+                    if (_todoController.text.trim().isNotEmpty) {
+                      _addToDoItem(_todoController.text.trim()); // Adiciona o item se o texto não estiver vazio
+                      _todoController.clear(); // Limpa o campo de texto após enviar
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Cor de fundo do botão
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Padding interno
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Bordas arredondadas
+                    ),
+                  ),
+                  child: const Text(
+                    'Add', // Texto no botão
+                    style: TextStyle(
+                      fontSize: 16, // Tamanho do texto
+                      color: Colors.white, // Cor branca para o texto
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+
           // Exibe a lista de tarefas
           Expanded(
             child: ListView.builder(
@@ -143,19 +183,14 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 final todo = _filteredOrAllTodos[index]; // Obtém o ToDo da lista
                 return ToDoItem(
-                  todo: todo, // Passa o ToDo para o widget ToDoItem
+                  todo: todo,
                   onToDoChanged: (updatedTodo) {
-                    // Ação ao editar o ToDo (abre o dialog de edição)
-                    if (todo.id != null) {
-                      _editToDoItem(todo.id!);
-                    }
+                    _toggleToDoStatus(todo.id!);
                   },
                   onDeleteItem: (id) {
-                    // Ação ao excluir o ToDo
                     _deleteToDoItem(id);
                   },
                   onEditItem: (id) {
-                    // Ação ao editar o ToDo
                     _editToDoItem(id);
                   },
                 );
